@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     "django_celery_results",
     "facebook_data",
     "search",
+    "data_exports",
 )
 
 CELERY_RESULT_BACKEND = "django-db"
