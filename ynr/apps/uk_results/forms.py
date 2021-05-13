@@ -111,7 +111,7 @@ class ResultSetForm(forms.ModelForm):
             instance.save()
 
             winners = self.get_winners(num_winners=self.ballot.winner_count)
-            self.ballot.membership_set.update(elected=None)
+            self.ballot.membership_set.update(elected=False)
 
             recorder = RecordBallotResultsHelper(self.ballot, instance.user)
             for membership, field_name in self.memberships:
