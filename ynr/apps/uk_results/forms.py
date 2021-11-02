@@ -132,6 +132,12 @@ class ResultSetForm(forms.ModelForm):
 
             instance.record_version()
 
+            # save the ballot if we were not able to record any winners due to a
+            # missing winner_count to make the ballot appear updated, allowing
+            # the vote counts to update in WCIVF
+            if not instance.ballot.winner_count:
+                instance.ballot.save()
+
             LoggedAction.objects.create(
                 user=instance.user,
                 action_type=ActionType.ENTERED_RESULTS_DATA,
