@@ -111,7 +111,13 @@ class ResultSetForm(forms.ModelForm):
             instance.save()
 
             winners = self.get_winners(num_winners=self.ballot.winner_count)
-            self.ballot.membership_set.update(elected=False)
+            if winners:
+                # we have winners so initially mark all candidates not elected
+                # before we record result and mark the winners as elected below
+                self.ballot.membership_set.update(elected=False)
+            else:
+                #  otherwise we cant be sure who was elected
+                self.ballot.membership_set.update(elected=None)
 
             recorder = RecordBallotResultsHelper(self.ballot, instance.user)
             for membership, field_name in self.memberships:
@@ -158,11 +164,15 @@ class ResultSetForm(forms.ModelForm):
             if field_name.startswith("tied_vote_") and value is True
         ]
 
-    def get_winners(self, num_winners=1):
+    def get_winners(self, num_winners):
         """
         Return a dictionary of fieldname, num votes for each of candidates with
         the most votes.
         """
+        # if we dont know how many winners there should be in total return early
+        if not num_winners:
+            return {}
+
         results = {
             field: votes
             for field, votes in self.cleaned_data.items()
