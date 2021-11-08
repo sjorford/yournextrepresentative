@@ -48,6 +48,7 @@ class CreateDocumentView(GroupRequiredMixin, CreateView):
         """
         self.object = form.save()
         try:
+            self.object.ballot.rawpeople.all.delete()
             extract_pages_for_ballot(
                 ballot=self.object.ballot, manual_upload=True
             )
