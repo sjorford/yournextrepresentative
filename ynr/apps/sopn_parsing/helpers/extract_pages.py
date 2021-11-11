@@ -63,7 +63,11 @@ def extract_pages_for_single_document(document, manual_upload):
             "No text in {}, skipping".format(document.uploaded_file.path)
         )
     for doc in all_documents_with_source:
-        pages = sopn.get_pages_by_ward_name(doc.ballot.post.label)
+        ward = doc.ballot.post.label
+        all_ballots_for_document = [
+            doc.ballot for doc in all_documents_with_source
+        ]
+        pages = sopn.get_pages_by_ward_name(ward, all_ballots_for_document)
         if not pages:
             continue
         page_numbers = ",".join(str(p.page_number) for p in pages)

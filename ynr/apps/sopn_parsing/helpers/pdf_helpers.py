@@ -24,6 +24,7 @@ class SOPNDocument:
         self.file = file
         self.pages = []
         self.parse_pages()
+        self.all_ballots_for_document = []
         self.document_heading = self.pages[0].get_page_heading_set()
         if len(self.document_heading) < 10:
             raise NoTextInDocumentError()
@@ -54,7 +55,7 @@ class SOPNDocument:
             retstr.close()
         fp.close()
 
-    def get_pages_by_ward_name(self, ward):
+    def get_pages_by_ward_name(self, ward, all_ballots_for_document):
         ward = clean_text(ward)
         matched_pages = []
         for page in self.unmatched_pages():
